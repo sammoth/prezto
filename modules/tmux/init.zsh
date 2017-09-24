@@ -23,25 +23,30 @@ if ([[ "$TERM_PROGRAM" = 'iTerm.app' ]] && \
   _tmux_iterm_integration='-CC'
 fi
 
-if [[ -z "$TMUX" && -z "$EMACS" && -z "$VIM" ]] && ( \
-  ( [[ -n "$SSH_TTY" ]] && zstyle -t ':prezto:module:tmux:auto-start' remote ) ||
-  ( [[ -z "$SSH_TTY" ]] && zstyle -t ':prezto:module:tmux:auto-start' local ) \
-); then
-  tmux start-server
+( ! [[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] ) && {
+    if [[ -z "$TMUX" && -z "$EMACS" && -z "$VIM" ]] && ( \
+    ( [[ -n "$SSH_TTY" ]] && zstyle -t ':prezto:module:tmux:auto-start' remote ) ||
+    ( [[ -z "$SSH_TTY" ]] && zstyle -t ':prezto:module:tmux:auto-start' local ) \
+    ); then
+	tmux start-server
+	tmux_session='prezto'
 
-  # Create a 'prezto' session if no session has been defined in tmux.conf.
-  if ! tmux has-session 2> /dev/null; then
-    tmux_session='prezto'
-    tmux \
-      new-session -d -s "$tmux_session" \; \
-      set-option -t "$tmux_session" destroy-unattached off &> /dev/null
-  else  
-      tmux $_tmux_iterm_integration new-window
-  fi
+	# Create a 'prezto' session if no session has been defined in tmux.conf.
+	if ! tmux has-session 2> /dev/null; then
+	    tmux \
+		new-session -d -t "$tmux_session" \; \
+		set-option -t "$tmux_session" destroy-unattached off &> /dev/null
+	else  
+	    tmux \
+		new-session -d -t "$tmux_session" \; \
+		set-option -t "$tmux_session" destroy-unattached off &> /dev/null
+	    tmux new-window
+	fi
 
-  # Attach to the 'prezto' session or to the last session used.
-  exec tmux $_tmux_iterm_integration attach-session
-fi
+	# Attach to the 'prezto' session or to the last session used.
+	exec tmux $_tmux_iterm_integration attach-session
+    fi
+}
 
 #
 # Aliases
