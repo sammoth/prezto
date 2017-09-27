@@ -28,23 +28,17 @@ fi
     ( [[ -n "$SSH_TTY" ]] && zstyle -t ':prezto:module:tmux:auto-start' remote ) ||
     ( [[ -z "$SSH_TTY" ]] && zstyle -t ':prezto:module:tmux:auto-start' local ) \
     ); then
-	tmux start-server
 	tmux_session='prezto'
 
 	# Create a 'prezto' session if no session has been defined in tmux.conf.
 	if ! tmux has-session 2> /dev/null; then
-	    tmux \
-		new-session -d -t "$tmux_session" \; \
-		set-option -t "$tmux_session" destroy-unattached off &> /dev/null
+	    exec tmux new-session -t "$tmux_session" \; set-option destroy-unattached
 	else  
-	    tmux \
-		new-session -d -t "$tmux_session" \; \
-		set-option -t "$tmux_session" destroy-unattached off &> /dev/null
-	    tmux new-window
+	    exec tmux new-session -t "$tmux_session" \; new-window \; set-option destroy-unattached
 	fi
 
 	# Attach to the 'prezto' session or to the last session used.
-	exec tmux $_tmux_iterm_integration attach-session
+	#exec tmux $_tmux_iterm_integration attach-session
     fi
 }
 
