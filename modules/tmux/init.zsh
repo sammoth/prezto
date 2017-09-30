@@ -13,6 +13,8 @@ if (( ! $+commands[tmux] )); then
   return 1
 fi
 
+[[ $Z_APP_LAUNCHER -eq 1 ]] && return 0
+
 #
 # Auto Start
 #
