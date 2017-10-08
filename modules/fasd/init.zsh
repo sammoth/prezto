@@ -36,14 +36,14 @@ source "$cache_file"
 
 unset cache_file init_args
 
-#fasd_cd() {
-#  local fasd_ret="$(fasd -d "$@")"
-#  if [[ -d "$fasd_ret" ]]; then
-#    cd "$fasd_ret"
-#  else
-#    print "$fasd_ret"
-#  fi
-#}
+fasd_cd() {
+  local fasd_ret="$(fasd -d "$@")"
+  if [[ -d "$fasd_ret" ]]; then
+    cd "$fasd_ret"
+  else
+    print "$fasd_ret"
+  fi
+}
 
 #
 # Aliases
