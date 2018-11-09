@@ -1,1 +1,1 @@
-source ~/dotfiles/.zlogin
+source ~/dotfiles/zsh/zlogin.zsh
